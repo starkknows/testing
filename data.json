@@ -1,0 +1,97 @@
+{
+    "status_code": 200.0,
+    "body": "{\"type\":\"uint8\",\"length\":10,\"data\":[61,29,231,173,143,126,30,126,112,85],\"success\":true}\n",
+    "error": null,
+    "header": {
+        "Content-Language": "en",
+        "Date": "Mon, 20 Apr 2015 21:29:10 GMT",
+        "Access-Control-Allow-Origin": "*",
+        "Vary": "Accept-Encoding,User-Agent",
+        "Content-Length": "89",
+        "Connection": "close",
+        "Content-Type": "application/json",
+        "Server": "Apache"
+    }
+}
+
+
+
+
+{"type":"uint8","length":10,"data":[186,153,222,148,164,128,223,23,41,55],"success":true}
+
+{"type":"uint8","length":"10","data":"[186,153,222,148,164,128,223,23,41,55]","success":"true"}
+
+{"type":"uint8","success":"true"}
+
+
+
+
+
+{
+    "status_code": 200,
+    "body": {
+        "type": "uint8",
+        "length": 10,
+        "data": [61, 29, 231, 173, 143, 126, 30, 126, 112, 85],
+        "success": true
+    },
+    "error": null,
+    "header": {
+        "Content-Language": "en",
+        "Date": "Mon, 20 Apr 2015 21:29:10 GMT",
+        "Access-Control-Allow-Origin": "*",
+        "Vary": "Accept-Encoding,User-Agent",
+        "Content-Length": "89",
+        "Connection": "close",
+        "Content-Type": "application/json",
+        "Server": "Apache"
+    }
+}
+
+
+
+
+
+{
+    "status_code": 200.0,
+    "body": "\n",
+    "error": null,
+    "header": {
+        "Age": "0",
+        "Date": "Mon, 20 Apr 2015 21:34:53 GMT",
+        "P3P": "policyref=\"http://info.yahoo.com/w3c/p3p.xml\", CP=\"CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC GOV\"",
+        "Content-Length": "1",
+        "Via": "http/1.1 r07.ycpi.gq1.yahoo.net (ApacheTrafficServer [cMsSf ])",
+        "Content-Type": "application/octet-stream",
+        "Connection": "keep-alive",
+        "Server": "ATS",
+        "Cache-Control": "private, no-cache, no-store"
+    }
+}
+
+
+
+
+{
+    "status_code": 200.0,
+    "body": "{\"type\":\"uint8\",\"length\":10,\"data\":[63,118,29,126,23,88,149,248,113,190],\"success\":true}\n",
+    "error": null,
+    "header": {
+        "Content-Language": "en",
+        "Date": "Mon, 20 Apr 2015 21:52:39 GMT",
+        "Access-Control-Allow-Origin": "*",
+        "Vary": "Accept-Encoding,User-Agent",
+        "Content-Length": "89",
+        "Connection": "close",
+        "Content-Type": "application/json",
+        "Server": "Apache"
+    }
+}
+
+
+
+
+
+
+
+

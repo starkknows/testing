@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JSON parser test page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jsonpather.js"></script>
+<script>
+
+var simpleJson =
+    "{\n" +
+    "  \"stringVal\": \"bar\",\n" +
+    "  \"objVal\": {\n" +
+    "    \"intVal\": 17\n" +
+    "  },\n" +
+    "  \"moo\": [\n" +
+    "    \"cow\",\n" +
+    "    \"horse\",\n" +
+    "    \"goat\"\n" +
+    "  ]\n" +
+    "}\n";
+
+
+var complexJson =
+	"{\n" +
+	"  \"medications\": [\n" +
+	"    {\n" +
+	"      \"aceInhibitors\": [\n" +
+	"        {\n" +
+	"          \"name\": \"lisinopril\",\n" +
+	"          \"strength\": \"10 mg Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"PO\",\n" +
+	"          \"sig\": \"daily\",\n" +
+	"          \"pillCount\": \"#90\",\n" +
+	"          \"refills\": \"Refill 3\"\n" +
+	"        }\n" +
+	"      ],\n" +
+	"      \"antianginal\": [\n" +
+	"        {\n" +
+	"          \"name\": \"nitroglycerin\",\n" +
+	"          \"strength\": \"0.4 mg Sublingual Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"SL\",\n" +
+	"          \"sig\": \"q15min PRN\",\n" +
+	"          \"pillCount\": \"#30\",\n" +
+	"          \"refills\": \"Refill 1\"\n" +
+	"        }\n" +
+	"      ],\n" +
+	"      \"anticoagulants\": [\n" +
+	"        {\n" +
+	"          \"name\": \"warfarin sodium\",\n" +
+	"          \"strength\": \"3 mg Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"PO\",\n" +
+	"          \"sig\": \"daily\",\n" +
+	"          \"pillCount\": \"#90\",\n" +
+	"          \"refills\": \"Refill 3\"\n" +
+	"        }\n" +
+	"      ],\n" +
+	"      \"betaBlocker\": [\n" +
+	"        {\n" +
+	"          \"name\": \"metoprolol tartrate\",\n" +
+	"          \"strength\": \"25 mg Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"PO\",\n" +
+	"          \"sig\": \"daily\",\n" +
+	"          \"pillCount\": \"#90\",\n" +
+	"          \"refills\": \"Refill 3\"\n" +
+	"        }\n" +
+	"      ],\n" +
+	"      \"diuretic\": [\n" +
+	"        {\n" +
+	"          \"name\": \"furosemide\",\n" +
+	"          \"strength\": \"40 mg Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"PO\",\n" +
+	"          \"sig\": \"daily\",\n" +
+	"          \"pillCount\": \"#90\",\n" +
+	"          \"refills\": \"Refill 3\"\n" +
+	"        }\n" +
+	"      ],\n" +
+	"      \"mineral\": [\n" +
+	"        {\n" +
+	"          \"name\": \"potassium chloride ER\",\n" +
+	"          \"strength\": \"10 mEq Tab\",\n" +
+	"          \"dose\": \"1 tab\",\n" +
+	"          \"route\": \"PO\",\n" +
+	"          \"sig\": \"daily\",\n" +
+	"          \"pillCount\": \"#90\",\n" +
+	"          \"refills\": \"Refill 3\"\n" +
+	"        }\n" +
+	"      ]\n" +
+	"    }\n" +
+	"  ],\n" +
+	"  \"labs\": [\n" +
+	"    {\n" +
+	"      \"name\": \"Arterial Blood Gas\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Main Hospital Lab\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"BMP\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"BNP\",\n" +
+	"      \"time\": \"3 Weeks\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"BUN\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Cardiac Enzymes\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"CBC\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Creatinine\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Main Hospital Lab\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Electrolyte Panel\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Glucose\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Main Hospital Lab\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"PT\/INR\",\n" +
+	"      \"time\": \"3 Weeks\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"PTT\",\n" +
+	"      \"time\": \"3 Weeks\",\n" +
+	"      \"location\": \"Coumadin Clinic\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"TSH\",\n" +
+	"      \"time\": \"1 Year\",\n" +
+	"      \"location\": \"Primary Care Clinic\"\n" +
+	"    }\n" +
+	"  ],\n" +
+	"  \"imaging\": [\n" +
+	"    {\n" +
+	"      \"name\": \"Chest X-Ray\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Main Hospital Radiology\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Chest X-Ray\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Main Hospital Radiology\"\n" +
+	"    },\n" +
+	"    {\n" +
+	"      \"name\": \"Chest X-Ray\",\n" +
+	"      \"time\": \"Today\",\n" +
+	"      \"location\": \"Main Hospital Radiology\"\n" +
+	"    }\n" +
+	"  ]\n" +
+	"}\n";
+
+
+jQuery(function($j) {
+    $j("#some-json").jsonpather({
+    	    mode: 'move',
+
+    	 display: "#json-view",
+    	   error: "#error",
+    	onChoose: function(jsonpath) {
+            var target = $j('#jsonpath-value');
+            target.val(jsonpath);
+    	}
+    });
+});
+
+function clearJson() {
+	jQuery('#some-json').val("").change();
+}
+
+function parseSample() {
+	console.log("foo");
+	jQuery('#some-json').trigger("parse");
+}
+
+function showSimple() {
+	jQuery('#some-json').val(simpleJson).change();
+}
+
+function showComplex() {
+	jQuery('#some-json').val(complexJson).change();
+}
+</script>
+</head>
+
+<body>
+
+    <div id="error" style="width:70%; color:#bb0000">
+    </div>
+
+    <div style="width:70%">
+       Test the jsonpath for sample JSON payloads
+       <div>
+          <input value="Simple JSON" type="button" onclick="showSimple();"/>
+       </div>
+
+       <div>
+          <input value="Complex JSON" type="button" onclick="showComplex();"/>
+       </div>
+
+       <div>
+	       <textarea id="some-json" rows="12" style="width:100%"></textarea>
+       </div>
+
+		<div id="json-view" class="sample parsed-data" style="border: 2px solid gray; height:200px; overflow:auto; display:none">
+        </div>
+
+       <div>
+          <input value="Clear JSON" type="button" onclick="clearJson()"/>
+       </div>
+       <div>
+          <input value="Parse JSON" type="button" onclick="parseSample()"/>
+       </div>
+
+
+
+        <div>jsonpath:
+        	<textarea id="jsonpath-value" rows="1" style="width:100">
+        	</textarea>
+        </div>
+    </div>
+</body>
+
+</html>
