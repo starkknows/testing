@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    
+    <style>
+    
+        
+    
+    </style>
+</head>
+
+<body>
+    
+    
+    
+    
+    
+    <textarea id="input">{"type":"uint8","length":10,"data":[186,153,222,148,164,128,223,23,41,55],"success":true}</textarea>
+    
+    <div id="output"></div>
+    <textarea id="xml-view"></textarea>
+    
+    <input type="button" id="parse" value="parse">
+    
+</body>
+    
+    
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script>
+        
+        /**
+ * jsonpather - Build json path expression
+ *
+ * @param options -
+ *      display: selector to the div that will hold the json view in which you click to pick json paths.
+ *      mode: hover, click/lclick, rclick, dclick/dblclick(default) - set when the json path is evaluated
+ *      onChose: call back that gets called and passes the json path expression of a selected element
+ */
+ 
+var myobj = '{ "name": "John", "lang": "JS", "length": 10 }';
+        
+myobj = $.parseJSON(myobj);
+        
+$.each(myobj, function( k, v ) {
+  alert( "Key: " + k + ", Value: " + v );
+});        
+    
+        
+
+(function($j) {
+	if (typeof String.prototype.trim !== 'function') {
+		String.prototype.trim = function() {
+			return this.replace(/^\s+|\s+$/g, ''); 
+		};
+	}
+
+    $j.fn.jsonpather = function(options) {
+
+        var JSON_DATA_TYPE = "json";
+        var INDENTURE = "&nbsp;&nbsp;&nbsp;&nbsp;";
+        var JSON_PATH_ATTR = "jpath";
+        var jsonObj = null;
+
+        var modes = {
+            'click': 'click', 'lclick': 'click',
+            'rclick': 'rclick',
+            'dclick': 'dblclick', 'dblclick': 'dblclick',
+            'move': 'hover', 'hover': 'hover'
+        };
+
+        var opts = {
+            display: "#xml-view",
+            mode: "click",
+            error: "",
+            dataType: JSON_DATA_TYPE,
+            onChoose: function(jsonpath) {
+                alert('jsonpath = ' + jsonpath);
+            }
+        };
+
+        $j.extend(opts, options);
+        
+        var evt = (typeof opts.mode == 'undefined') ? 'dblclick' : modes[opts.mode];
+
+        function calcJSONPath(parentPath, currentKey) {
+            return parentPath + "." + currentKey;
+        }
+
+        function showPath(evt) {
+            opts.onChoose($j(this).attr(JSON_PATH_ATTR));
+            evt.stopPropagation();
+        }
+
+        function toHtml(jsonDoc, rootPath, depth, parentDiv) {
+        	var indent = (depth > 0 ? calcIndenture(INDENTURE, depth) : "");
+        	var startMarkerDom = makeMarkerDom(jsonDoc, "start", rootPath);
+            var html = $j("<span>" + (parentDiv ? "" : indent) + "<span/>")
+            	.append(startMarkerDom);
+            if (startMarkerDom)
+            	html.append("<br/>");
+            if (!jsonDoc && jsonDoc != null) return html;
+            
+            if ($j.isArray(jsonDoc)) {
+                for (var i = 0; i < jsonDoc.length; i++) {
+                    var jsonPath = rootPath + "[" + i + "]";
+                    html.append(i === 0 ? "" : ",<br/>");
+                    html.append(calcIndenture(INDENTURE, depth))
+                    	.append(toHtml(jsonDoc[i], jsonPath, depth + 1, true));
+                }
+            } else if (typeof jsonDoc == 'object' && jsonDoc != null) {
+            	var firstObj = true;
+                $j.each(jsonDoc, function(key, value) {
+                    var jsonPath = calcJSONPath(rootPath, key);
+                    html.append(firstObj ? "" : ",<br/>");
+                    firstObj = false;
+                    html.append(makeKeyDom(key, jsonPath, depth))
+                    	.append(toHtml(value, jsonPath, depth + 1, true));
+                });
+            } else {
+                html.append(makeValueDom(jsonDoc, rootPath));
+            }
+            var markerDom = makeMarkerDom(jsonDoc, "end", rootPath);
+        	var indent = (depth > 0 ? calcIndenture(INDENTURE, depth - 1) : "");
+            if (markerDom)
+            	html.append("<br/>" + indent).append(markerDom);
+            return html;
+
+
+        }
+        
+        function makeKeyDom(key, jsonPath, depth) {
+            return makeSelectable($j("<span " + JSON_PATH_ATTR + "='" + jsonPath + "'>"
+            		+ calcIndenture(INDENTURE, depth) + (typeof key == "string" ? JSON.stringify(key) : key) 
+            		+ ": </span>"));
+        }
+
+        function makeValueDom(value, jsonPath) {
+            return makeSelectable($j("<span " + JSON_PATH_ATTR + "='" + jsonPath + "'>" 
+            		+ (typeof value == "string" ? JSON.stringify(value) : (value == null ? "null" :value)) 
+            		+ "</span>"));
+        }
+
+        function makeMarkerDom(jsonObj, type, jsonPath) {
+            var markers = {
+            		object: {
+            			start: "{",
+            			end: "}"
+            		},
+            		array: {
+            			start: "[",
+            			end: "]"
+            		}
+            };
+        	var objType = getObjType(jsonObj);
+        	if (!markers.hasOwnProperty(objType))
+        		return ""
+        	return makeSelectable($j("<span " + JSON_PATH_ATTR + "='" + jsonPath + "'>" + markers[objType][type] + "</span>"));
+        }
+        
+        function makeSelectable(span) {
+        	return span.addClass("selectable")
+        		.on(evt, showPath);
+        }
+        
+        function calcIndenture(separator, depth) {
+            return new Array(depth + 2).join(separator);
+        }
+        
+        function getObjType(jsonObj) {
+            return ($j.isArray(jsonObj) ? "array" : ( jsonObj == null ? null : typeof jsonObj));
+        }
+
+        function parse() {
+            try {
+                var jsonData = opts.source.val();
+                
+  	    		if (jsonData.trim() == opts.defaultText)
+  	    			return;
+                jsonObj = $j.parseJSON(jsonData);
+                if (opts.hidden) {
+                    $j(opts.hidden).val(jsonData);
+                }
+
+                if (jsonData.trim() == "") {
+                    $j(opts.display).val("").hide();
+                    opts.source.show();
+                    return;
+                }
+                alert(jsonData)
+                var html = toHtml(jsonObj, "$", 0)
+                
+                $j('body').append(html);
+                
+                opts.source.hide();
+                $j(opts.display)
+                	.fadeIn()
+                	.html(html);
+                return true;
+            } catch (e) {
+                var errorMessage = "Invalid JSON, unable to parse";
+                if (typeof opts.error == 'function')
+                    opts.error(errorMessage);
+                else
+                    alert(errorMessage);
+            }
+        }
+
+        this.each(function() {
+            
+            //if (JSON_DATA_TYPE !== opts.dataType.toLowerCase())
+                //return;
+
+            var source = $j(this);
+            
+            opts.source = source;
+            
+            alert(source.val())
+            
+            source
+                .text(opts.defaultText)
+                .on('focus', function() {
+                    if ($j(this).val().trim() == '-- put sample payload here --') {
+                        $j(this).off('focus').val("");
+                    }
+                })
+                .unbind("change")
+                .change(function() {
+                    var jsonData = source.val();
+                    try {
+                        jsonObj = $j.parseJSON(jsonData);
+                    } catch (e) {
+                        return;
+                    }
+                    if (opts.hidden) {
+                        $j(opts.hidden).val(jsonData);
+                    }
+
+                    if (jsonData.trim() == "") {
+                        $j(opts.display).val("").hide();
+                        source.show();
+                    }
+                })
+                .unbind("parse")
+                .bind("parse", function() {
+                    return parse();
+                });
+        });
+
+        this.parse = parse;
+        return this;
+    };
+    
+//    //$j('#parse').click(function(){
+//        $j('#input').jsonpather({display:'#output'});             
+//    //})
+//    
+    $j('#parse').click(function(){
+        $j('#input').trigger('parse');
+    })
+    
+    $j("#input").jsonpather({
+    	    mode: 'move',
+
+    	 display: "#output",
+    	   error: "#error",
+    	onChoose: function(jsonpath) {
+            var target = $j('#jsonpath-value');
+            target.val(jsonpath);
+    	}
+    });
+    
+})(jQuery);
+          
+        
+        
+        
+    </script>
+</html>
+
