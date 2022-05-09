@@ -9,7 +9,7 @@ function getSmallest() {
         if (result)
             return x;
 
-        x++;
+        x+=20;
     }
     return x;
 }
